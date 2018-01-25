@@ -3,16 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context="com.sample.todaycoupon7.multiactivitymapsample.NextActivity">
 
-    <RelativeLayout
-        android:id="@+id/map_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@android:color/black"
+        android:text="Static Map"/>
+
+    <ImageView
+        android:id="@+id/ivStaticMap"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/tvTitle"
+        android:scaleType="centerCrop"
+        android:background="#FFe0e0e0"/>
+
+    <ImageView
+        android:id="@+id/ivMarker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next Activity"/>
+        android:layout_below="@id/tvTitle"
+        android:src="@mipmap/custom_marker_red"/>
 
 </RelativeLayout>

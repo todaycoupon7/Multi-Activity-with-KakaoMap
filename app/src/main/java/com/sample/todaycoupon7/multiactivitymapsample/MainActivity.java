@@ -3,66 +3,95 @@ package com.sample.todaycoupon7.multiactivitymapsample;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
+import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
-    private MapView mapView;
-    private ViewGroup mapViewContainer;
+public class MainActivity extends AppCompatActivity implements MapView.POIItemEventListener {
 
-    private double longitude = 0.f;
-    private double latitude = 0.f;
-    private int zoomLevel = 0;
+    private static final String TAG = "MainActivity";
+
+    static class Marker {
+        public String name;
+        public double latitude;
+        public double longitude;
+
+        public Marker(String name, double latitude, double longitude) {
+            this.name = name;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
+
+    // sample marker data
+    private static ArrayList<Marker> markers = new ArrayList<>();
+    static {
+        markers.add(new Marker("첫번째 마커", 37.564449310302734f, 126.98155212402344f));
+        markers.add(new Marker("두번째 마커", 37.56782913208008f, 126.98147583007813f));
+        markers.add(new Marker("세번째 마커", 37.56437301635742f, 126.985595703125f));
+        markers.add(new Marker("네번째 마커", 37.563751220703125f, 126.98139190673828f));
+        markers.add(new Marker("다섯번째 마커", 37.5631217956543f, 126.9827651977539f));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // java code
-        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        MapView mapView = findViewById(R.id.map_view);
+        mapView.setPOIItemEventListener(this);
+
+        // add markers
+        MapPOIItem selectItem = null;
+        for(Marker marker : markers) {
+            MapPOIItem item = new MapPOIItem();
+            item.setItemName(marker.name);
+            item.setMapPoint(MapPoint.mapPointWithGeoCoord(marker.latitude, marker.longitude));
+            item.setMarkerType(MapPOIItem.MarkerType.BluePin);
+            item.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+            mapView.addPOIItem(item);
+            if(selectItem == null) {
+                selectItem = item;
+            }
+        }
+        // 기본적으로 선택된 아이템 설정
+        if(selectItem != null) {
+            mapView.selectPOIItem(selectItem, true);
+        }
+        // 첫번째 마커의 위치가 지도의 가운데로 오도록 지도를 이동시킴
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(
+                markers.get(0).latitude,markers.get(0).longitude), true);
+    }
+
+    /**********************************
+     * MapView.POIItemEventListener
+     **********************************/
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {}
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+        final double xWCONG = mapPOIItem.getMapPoint().getMapPointWCONGCoord().x;
+        final double yWCONG = mapPOIItem.getMapPoint().getMapPointWCONGCoord().y;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, NextActivity.class);
+                intent.putExtra(NextActivity.INTENT_EXTRA_X_WCONG, xWCONG);
+                intent.putExtra(NextActivity.INTENT_EXTRA_Y_WCONG, yWCONG);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        // init or resume map
-        mapView = new MapView(this);
-        mapViewContainer.addView(mapView);
-
-        if(latitude != 0 &&
-                longitude != 0) {
-            mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude,longitude), false);
-        }
-        if(zoomLevel != 0) {
-            mapView.setZoomLevel(zoomLevel, false);
-        }
-    }
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {}
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {}
 
-        // release map
-        final MapPoint cmp = mapView.getMapCenterPoint();
-        if(cmp != null) {
-            latitude = cmp.getMapPointGeoCoord().latitude;
-            longitude = cmp.getMapPointGeoCoord().longitude;
-        } else {
-            latitude = longitude = 0;
-        }
-        zoomLevel = mapView.getZoomLevel();
-        mapViewContainer.removeAllViews();
-    }
-
-    public void onClicked(View v) {
-        if(v.getId() == R.id.btnNext) {
-            startActivity(new Intent(this, NextActivity.class));
-        }
-    }
 }
