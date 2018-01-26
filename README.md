@@ -1,6 +1,6 @@
 # **Daum과 Naver 지도 사용 및 staticMap 이미지 사용**
 
-Daum 지도와 Naver 지도에 Marker 표시를 하고 해당 Marker를 클릭시에 다음 화면(activity)로 이동하여 staticMap 이미지 지도를 표시함.
+Daum 지도와 Naver 지도에 Marker 표시를 하고 해당 Marker를 클릭시에 다음 화면(activity)로 이동하여 staticMap 지도 이미지를 표시함.
 
 필수 요구 사항
 ==
