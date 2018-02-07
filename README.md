@@ -2,6 +2,8 @@
 
 Daum 지도와 Naver 지도에 Marker 표시를 하고 해당 Marker를 클릭시에 다음 화면(activity)로 이동하여 staticMap 지도 이미지를 표시함.
 
+자세한 내용은 (Daum 지도와 Naver 지도 서비스 비교)[https://todaycoupon7.github.io/2018/01/26/map_compare.html] 링크 참조
+
 필수 요구 사항
 ==
 - Daum 지도의 App Key 발급을 받아야 함. [http://apis.map.daum.net/]
